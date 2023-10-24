@@ -2,14 +2,15 @@ const Thing = require('../models/thing');
 
 
 exports.createThing = (req, res, next) => {
-  const thing = new Thing({
-    title: req.body.title,
-    auteur: req.body.auteur,
-    imageUrl: req.body.imageUrl,
-    annee: req.body.annee,
-    genre: req.body.genre,
-    note: req.body.note
-  });
+  const thingObject = JSON.parse(req.body.book);
+   delete thingObject._id;
+   delete thingObject._userId;
+   const thing = new Thing({
+       ...thingObject,
+       userId: req.auth.userId,
+       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+   });
+   console.log("image:", thing)
   thing.save().then(
     () => {
       res.status(201).json({
@@ -43,13 +44,7 @@ exports.getOneThing = (req, res, next) => {
 
 exports.modifyThing = (req, res, next) => {
   const thing = new Thing({
-    _id: req.params.id,
-    title: req.body.title,
-    auteur: req.body.auteur,
-    imageUrl: req.body.imageUrl,
-    annee: req.body.annee,
-    genre: req.body.genre,
-    note: req.body.note
+    
   });
   Thing.updateOne({_id: req.params.id}, thing).then(
     () => {

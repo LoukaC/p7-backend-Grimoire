@@ -27,4 +27,8 @@ app.use(express.json()); // lecrure body en json
 app.use("/api/books", stuffRoutes);
 app.use("/api/auth", userRoutes);
 
+
+const path = require('path');
+app.use('/images', express.static(path.join(__dirname, 'images'))); // pour fichier pour recupérer le chemin des images pour pouvoir les afficher
+
 module.exports = app;
