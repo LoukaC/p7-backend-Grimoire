@@ -82,6 +82,58 @@ exports.getAllStuff = (req, res, next) => {
 };
 
 
+
+
+exports.rating = (req, res, next) => {
+
+  const userId = req.auth.userId;
+  const grade = req.body.rating;
+
+  // Recherche du document à mettre à jour par son ID
+  Thing.findById(req.params.id)
+    .then(thing => {
+      if (!thing) {
+        return res.status(404).json({ message: 'Le livre n\'existe pas.' });
+      }
+
+      // l'utilisateur ne peut pas voter plusieurs fois
+      const ratings = thing.ratings;
+      const AlreadyRateByUser = ratings.find((rating) => this.rating.userId == userId);
+      if (AlreadyRateByUser != null){
+        res.status(400).send("l'utilisateur a deja voté");
+        return;
+      }
+
+
+      // Ajout de la nouvelle note à l'array 'ratings'
+      thing.ratings.push({ userId: userId, grade: grade });
+
+      // Calcul de la nouvelle moyenne de notation
+      const allGrades = thing.ratings.map(item => item.grade);
+      const ratingSum = allGrades.reduce((acc, curr) => acc + curr, 0);
+      const averageRating = ratingSum / allGrades.length;
+      thing.averageRating = averageRating;
+
+      // Sauvegarde des modifications dans la base de données et renvoi du document mis à jour
+      return thing.save();
+    })
+    .then(Thing => {
+      res.status(200).json({ 
+        message: 'Note ajoutée avec succès.', 
+        Thing
+        
+      });
+    })
+    .catch(error => {
+      res.status(500).json({ error: error });
+    });
+};
+
+
 exports.getBestThing = (req, res, next) => {
-  
+   Thing.find()
+      .sort({averageRating: -1}) // triés par ordre décroissant
+      .limit(3)
+      .then(bestRatedBook => res.status(200).json(bestRatedBook))
+      .catch(error => res.status(400).json({error}))
 };

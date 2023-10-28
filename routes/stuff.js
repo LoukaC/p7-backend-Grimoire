@@ -6,13 +6,12 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 const sharp = require('../middleware/sharp');
 
-
+router.get('/bestrating', stuffCrtl.getBestThing);
 router.get('/:id', stuffCrtl.getOneThing);
-router.put('/:id', auth, multer, stuffCrtl.modifyThing);
+router.put('/:id', auth, multer, sharp, stuffCrtl.modifyThing);
 router.delete('/:id', auth, multer, stuffCrtl.deleteThing);
 router.get('/', stuffCrtl.getAllStuff);
-router.post('/', auth, multer, stuffCrtl.createThing);
-router.get('/bestrating', stuffCrtl.getBestThing);
-
+router.post('/', auth, multer, sharp, stuffCrtl.createThing);
+router.post('/:id/rating', auth, stuffCrtl.rating);
 
 module.exports = router;
