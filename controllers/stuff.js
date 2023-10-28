@@ -9,7 +9,7 @@ exports.createThing = (req, res, next) => {
    const thing = new Thing({
        ...thingObject,
        userId: req.auth.userId,
-       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+       imageUrl: `${req.protocol}://${req.get('host')}/${req.imagePath}`
    });
   thing.save().then(
     () => {

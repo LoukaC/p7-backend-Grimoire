@@ -4,6 +4,7 @@ const router = express.Router();
 const stuffCrtl = require("../controllers/stuff");
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
+const sharp = require('../middleware/sharp');
 
 
 router.get('/:id', stuffCrtl.getOneThing);
