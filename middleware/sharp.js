@@ -12,12 +12,14 @@ const imageProcessingMiddleware = (req, res, next) => {
       .then((outputBuffer) => {
   const timestamp = Date.now(); 
   const originalName = req.file.originalname.split('.').slice(0, -1).join('.');
-  const imagePath = `images/${originalName}_${timestamp}.webp`; 
+  const imagePath = `images/${originalName}_${timestamp}.webp`;
+  const newFileName = `${originalName}_${timestamp}.webp`; 
   fs.writeFile(imagePath, outputBuffer, (err) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement de l\'image.' });
     }
+    req.file.filename = newFileName;
     req.imagePath = imagePath; // Définissez correctement req.imagePath avec le chemin de l'image enregistrée
     next();
   });

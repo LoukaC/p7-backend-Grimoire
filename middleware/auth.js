@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
    try {
-       // Extraction du token de l'en-tête Authorization en tant que deuxième élément après "Bearer"
+       // Extraction du token de l'en-tête Authorization sans le Bearer
        const token = req.headers.authorization.split(' ')[1];
        // Vérification de la validité du token à l'aide de la clé secrète
        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
        };
        next();
    } catch(error) {
-       // Gestion des erreurs liées au token et envoi d'une réponse 401 en cas d'échec de l'authentification
        res.status(401).json({ error: 'Invalid or expired token' });
    }
 };

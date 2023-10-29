@@ -9,7 +9,7 @@ const MIME_TYPES = {
 
 // Configuration de multer avec memoryStorage
 const storage = multer.memoryStorage({
-  // Définir le dossier de destination des fichiers téléchargés (dans ce cas, 'images')
+  // Définir le dossier de destination des fichiers téléchargés
   destination: (req, file, callback) => {
     callback(null, 'images');
   },
