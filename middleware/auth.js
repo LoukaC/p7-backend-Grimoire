@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
    try {
        // Extraction du token de l'en-tête Authorization sans le Bearer
        const token = req.headers.authorization.split(' ')[1];
-       // Vérification de la validité du token à l'aide de la clé secrète
+       // Vérification de la validité du token en le comparant avec la clé secrète
        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
        // Récupération de l'ID utilisateur à partir du token décodé
        const userId = decodedToken.userId;

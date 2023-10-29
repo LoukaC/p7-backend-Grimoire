@@ -7,14 +7,15 @@ exports.createThing = (req, res, next) => {
    delete thingObject._id;
    delete thingObject._userId;
    const thing = new Thing({
-       ...thingObject,
+       ...thingObject, // nouvelle instance de "Thing" en utilisant les données de thingObject
        userId: req.auth.userId,
        imageUrl: `${req.protocol}://${req.get('host')}/${req.imagePath}`
    });
-  thing.save().then(
+  thing.save()
+  .then(
     () => {
       res.status(201).json({
-        message: 'Post saved successfully!'
+        message: 'livre ajoué'
       });
     }
   ).catch(
@@ -40,11 +41,11 @@ exports.getOneThing = (req, res, next) => {
    } : { ...req.body };
 
    delete thingObject._userId;
-   Thing.findOne({_id: req.params.id})
+   Thing.findOne({_id: req.params.id}) //trouver un objet  partir de son ID.
        .then((thing) => {
            if (thing.userId != req.auth.userId) {
-               res.status(401).json({ message : 'Not authorized'});
-           } else {
+               res.status(401).json({ message : 'Non autorisé'});
+           } else {// mise à jour de l'objet Thing. 
                Thing.updateOne({ _id: req.params.id}, { ...thingObject, _id: req.params.id})
                .then(() => res.status(200).json({message : 'Objet modifié!'}))
                .catch(error => res.status(401).json({ error }));
@@ -60,11 +61,11 @@ exports.deleteThing = (req, res, next) => {
    Thing.findOne({ _id: req.params.id})
        .then(thing => {
            if (thing.userId != req.auth.userId) {
-               res.status(401).json({message: 'Not authorized'});
+               res.status(401).json({message: 'Non autorisé'});
            } else {
-               const filename = thing.imageUrl.split('/images/')[1];
-               fs.unlink(`images/${filename}`, () => {
-                   Thing.deleteOne({_id: req.params.id})
+               const filename = thing.imageUrl.split('/images/')[1]; //  extrait le nom de fichier de l'URL
+               fs.unlink(`images/${filename}`, () => { // suppression de l'image
+                   Thing.deleteOne({_id: req.params.id}) // suppression du livre 
                        .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
                        .catch(error => res.status(401).json({ error }));
                });

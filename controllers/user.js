@@ -41,7 +41,7 @@ exports.login = (req, res, next) => {
                        return res.status(401).json({ message: 'identifiant/ mdp incorrect' });
                    }
                    else {
-                    // jeton d'authentification avec une clé secrète est créé
+                    // création jeton d'authentification avec une clé secrète est créé
                    const token = jwt.sign( 
                                 { userId: user._id },
                                 'RANDOM_TOKEN_SECRET',
