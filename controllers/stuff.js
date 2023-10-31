@@ -37,6 +37,7 @@ exports.getOneThing = (req, res, next) => {
 
  exports.modifyThing = (req, res, next) => {
   const thingObject = req.file ? {
+        ...JSON.parse(req.body.book),
        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
    } : { ...req.body };
 
@@ -46,10 +47,13 @@ exports.getOneThing = (req, res, next) => {
            if (thing.userId != req.auth.userId) {
                res.status(401).json({ message : 'Non autorisé'});
            } else {// mise à jour de l'objet Thing. 
-               Thing.updateOne({ _id: req.params.id}, { ...thingObject, _id: req.params.id})
-               .then(() => res.status(200).json({message : 'Objet modifié!'}))
-               .catch(error => res.status(401).json({ error }));
-           } 
+               const filename = thing.imageUrl.split('/images/')[1]; // recupération du nom de fichier à partir de l'URL
+                fs.unlink(`images/${filename}`, () => {// suppression de l'image
+                    Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
+                        .then(() => res.status(200).json({ message: 'Objet modifié!' }))
+                        .catch((error) => res.status(401).json({ error }));
+                });
+            }
        })
        .catch((error) => {
            res.status(400).json({ error });
@@ -116,7 +120,7 @@ exports.rating = (req, res, next) => {
       thing.averageRating = averageRating;
 
       // Sauvegarde des modifications dans la base de données et renvoi du document mis à jour
-      return thing.save();
+      return thing.save()
     })
     .then(Thing => {
       res.status(200).json({ 

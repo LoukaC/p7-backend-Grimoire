@@ -17,7 +17,7 @@ const normalizePort = val => {
   return false; // Retourne false si le port n'est pas valide
 };
 
-// Récupération du port à partir de la variable d'environnement PORT ou utilisation du port par défaut 3000
+// Récupération du port à partir de la variable d'environnement PORT ou utilisation du port par défaut 4000
 const port = normalizePort(process.env.PORT || '4000');
 
 // Définition de la propriété 'port' de l'application Express avec le port défini précédemment
